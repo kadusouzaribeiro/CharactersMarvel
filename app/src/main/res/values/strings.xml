@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Characters Marvel</string>
+    <string name="character_image">Character Image</string>
+    <string name="aparicoes">Apariçoes</string>
+    <string name="close">Fechar</string>
+    <string name="comics">Quadrinhos</string>
+    <string name="stories">Histórias</string>
+    <string name="events">Eventos</string>
+    <string name="series">Séries</string>
+</resources>

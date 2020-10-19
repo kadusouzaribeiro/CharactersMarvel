@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="24dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imgDetailImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="center"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/character_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/without_image" />
+
+    <TextView
+        android:id="@+id/txtDetailName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto_black"
+        app:layout_constraintEnd_toEndOf="@+id/imgDetailImage"
+        app:layout_constraintStart_toStartOf="@+id/imgDetailImage"
+        app:layout_constraintTop_toBottomOf="@+id/imgDetailImage"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto"
+        android:maxLines="6"
+        android:singleLine="false"
+        app:layout_constraintEnd_toEndOf="@+id/imgDetailImage"
+        app:layout_constraintStart_toStartOf="@+id/imgDetailImage"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailName"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailComics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintEnd_toStartOf="@+id/txtDetailStories"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailAppearance"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailStories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtDetailComics"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtDetailComics"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintEnd_toStartOf="@+id/txtDetailSeries"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailComics"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailSeries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtDetailEvents"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtDetailEvents"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/txtDetailAppearance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/aparicoes"
+        app:layout_constraintEnd_toEndOf="@+id/imgDetailImage"
+        app:layout_constraintStart_toStartOf="@+id/imgDetailImage"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailDesc" />
+
+    <Button
+        android:id="@+id/btDetailClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/close"
+        android:fontFamily="@font/roboto"
+        android:background="@color/primaryRed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailEvents" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
