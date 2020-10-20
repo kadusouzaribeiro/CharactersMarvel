@@ -1,8 +1,10 @@
 package com.stefanini.teste.charactersmarvel
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -17,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.stefanini.teste.charactersmarvel.adapter.CharacterAdapter
 import com.stefanini.teste.charactersmarvel.data.local.CharacterEntity
 import com.stefanini.teste.charactersmarvel.data.remote.ResponseStatus
+import com.stefanini.teste.charactersmarvel.data.remote.dto.Results
 import com.stefanini.teste.charactersmarvel.databinding.ActivityMainBinding
 import com.stefanini.teste.charactersmarvel.util.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -30,23 +33,19 @@ class MainActivity : DaggerAppCompatActivity() {
 
     lateinit var mainViewModel: MainViewModel
 
-    lateinit var pbLoading: ProgressBar
-
-    lateinit var txtLoading: TextView
-
-    lateinit var rvCharacters: RecyclerView
-
     lateinit var charactersAdapter: CharacterAdapter
 
-    var loading = false
+    private var loading = false
 
-    var listCharacters = mutableListOf<CharacterEntity>()
+    private var listCharacters = mutableListOf<CharacterEntity>()
 
-    var offset = 0
+    private var offset = 0
 
-    var limit = 50
+    private var limit = 50
 
     lateinit var cDialog: AlertDialog
+
+    private lateinit var binding: ActivityMainBinding
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
@@ -54,89 +53,46 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setBinding()
-
         mainViewModel = ViewModelProvider(this, providerFactory).get(MainViewModel::class.java)
+
+        binding = DataBindingUtil.setContentView<ActivityMainBinding>(
+            this,
+            R.layout.activity_main
+        )
 
         Log.d(TAG, "onCreate: getcharacter")
 
         mainViewModel.getCharacters(offset, limit)
-        
+
+        subscribeObserver()
+    }
+
+    private fun subscribeObserver() {
         mainViewModel.characters.removeObservers(this)
         mainViewModel.characters.observe(this, {
             when (it.status) {
                 ResponseStatus.LOADING -> {
-                    Log.d(TAG, "onCreate: Consultando API")
-                    txtLoading.text = "Buscando Informações"
+                    onResponseLoading()
                 }
                 ResponseStatus.ERROR -> {
-                    pbLoading.visibility = View.GONE
-                    //llProgress.visibility = View.GONE
-                    txtLoading.text = it.message
+                    onResponseError(it.message)
                 }
                 ResponseStatus.SUCCESS -> {
-                    pbLoading.visibility = View.GONE
-                    if (loading) {
-                        cDialog.dismiss()
-                    }
-                    txtLoading.visibility = View.GONE
-                    it.data?.forEach { it ->
-                        val formatOrigin = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSSS")
-                        val formatTarget = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-                        val lastUpdate = formatTarget.format(formatOrigin.parse(it.modified))
-                        var imageUrl =
-                            "${it.thumbnail.path}//portrait_uncanny.${it.thumbnail.extension}"
-                        GlideApp.with(this)
-                            .load(imageUrl)
-                            .placeholder(R.drawable.ic_placeholder_foreground)
-                            .error(R.drawable.without_image)
-                            .fallback(R.drawable.without_image)
-                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                            .preload()
-                        listCharacters.add(
-                            CharacterEntity(
-                                id = it.id,
-                                name = it.name,
-                                image = imageUrl,
-                                description = it.description,
-                                comics = it.comics.items.size,
-                                stories = it.stories.items.size,
-                                events = it.events.items.size,
-                                series = it.series.items.size,
-                                lastUpdate = lastUpdate
-                            )
-                        )
-                    }
-                    if (loading) {
-                        charactersAdapter.notifyDataSetChanged()
-                        loading = false
-                    } else {
-                        setListCharacter()
-                    }
+                    onResponseSuccess(it.data)
                 }
             }
         })
     }
 
-    fun setBinding() {
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
-            this,
-            R.layout.activity_main
-        )
-        pbLoading = binding.pbLoading
-        txtLoading = binding.txtLoading
-        rvCharacters = binding.rvCharacters
-    }
-
-    fun setListCharacter() {
+    private fun setListCharacter() {
         charactersAdapter = CharacterAdapter(listCharacters, this)
 
         var llManager = LinearLayoutManager(this)
-        rvCharacters.layoutManager = llManager
-        rvCharacters.adapter = charactersAdapter
-        rvCharacters.visibility = View.VISIBLE
+        binding.rvCharacters.layoutManager = llManager
+        binding.rvCharacters.adapter = charactersAdapter
+        binding.rvCharacters.visibility = View.VISIBLE
 
-        rvCharacters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvCharacters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -154,7 +110,7 @@ class MainActivity : DaggerAppCompatActivity() {
         })
     }
 
-    fun progress() {
+    private fun progress() {
         cDialog = AlertDialog.Builder(this)
             .setView(layoutInflater.inflate(R.layout.dialog_loading, null))
             .setCancelable(false)
@@ -167,5 +123,56 @@ class MainActivity : DaggerAppCompatActivity() {
             }
             .create()
         cDialog.show()
+    }
+
+    private fun onResponseLoading() {
+        binding.txtLoading.text = String.format("%s", getString(R.string.getting_characters))
+    }
+
+    private fun onResponseError(msg: String?) {
+        binding.pbLoading.visibility = View.GONE
+        binding.txtLoading.text = msg
+    }
+
+    private fun onResponseSuccess(characters: List<Results>?) {
+        binding.pbLoading.visibility = View.GONE
+        binding.txtLoading.visibility = View.GONE
+        if (loading) {
+            cDialog.dismiss()
+        }
+
+        characters?.forEach { it ->
+            val formatOrigin = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSSS")
+            val formatTarget = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+            val lastUpdate = formatTarget.format(formatOrigin.parse(it.modified))
+            var imageUrl =
+                    "${it.thumbnail.path}//portrait_uncanny.${it.thumbnail.extension}"
+            GlideApp.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder_foreground)
+                    .error(R.drawable.without_image)
+                    .fallback(R.drawable.without_image)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .preload()
+            listCharacters.add(
+                    CharacterEntity(
+                            id = it.id,
+                            name = it.name,
+                            image = imageUrl,
+                            description = it.description,
+                            comics = it.comics.items.size,
+                            stories = it.stories.items.size,
+                            events = it.events.items.size,
+                            series = it.series.items.size,
+                            lastUpdate = lastUpdate
+                    )
+            )
+        }
+        if (loading) {
+            charactersAdapter.notifyDataSetChanged()
+            loading = false
+        } else {
+            setListCharacter()
+        }
     }
 }

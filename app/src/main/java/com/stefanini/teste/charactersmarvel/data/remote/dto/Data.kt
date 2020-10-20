@@ -9,5 +9,5 @@ data class Data (
 	val limit : Int,
 	val total : Int,
 	val count : Int,
-	val results : List<Results>
+	val results : MutableList<Results>
 )

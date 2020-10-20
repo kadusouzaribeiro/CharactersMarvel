@@ -15,5 +15,5 @@ data class Results (
 	val series : Series,
 	val stories : Stories,
 	val events : Events,
-	val urls : List<Urls>
+	val urls : MutableList<Urls>
 )

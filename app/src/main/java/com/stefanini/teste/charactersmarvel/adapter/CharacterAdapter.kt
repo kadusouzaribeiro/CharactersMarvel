@@ -17,6 +17,8 @@ class CharacterAdapter @Inject constructor (var characterList: List<CharacterEnt
 
     var characterDetailDialog = CharacterDetailDialog()
 
+    private val TAGDIALOG = "characterDetailDialog"
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterHolder {
         return CharacterHolder(LayoutInflater.from(parent.context).inflate(
             R.layout.character_item,
@@ -35,9 +37,8 @@ class CharacterAdapter @Inject constructor (var characterList: List<CharacterEnt
             .into(holder.image)
         holder.name.text = character.name
         holder.card.setOnClickListener {
-            Log.d("Adapter", "onBindViewHolder: $character")
             characterDetailDialog.setChar(character)
-            characterDetailDialog.show(activity.supportFragmentManager, "characterDetailDialog")
+            characterDetailDialog.show(activity.supportFragmentManager, TAGDIALOG)
         }
     }
 

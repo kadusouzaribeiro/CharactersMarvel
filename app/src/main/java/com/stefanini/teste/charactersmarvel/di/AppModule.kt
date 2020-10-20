@@ -38,19 +38,6 @@ class AppModule {
             .build()
     }
 
-//    OkHttpClient = {
-//
-//
-//
-//        val interceptor =
-//            HttpLoggingInterceptor { message ->
-//                Log.d("Retrofit", message)
-//            }
-//        interceptor.level = HttpLoggingInterceptor.Level.BODY
-//
-//        return clientBuilder.addInterceptor(interceptor).build()
-//    }
-
     @Singleton
     @Provides
     fun provideRetrofitInstance(mainApplication: MainApplication, client: OkHttpClient): Retrofit {

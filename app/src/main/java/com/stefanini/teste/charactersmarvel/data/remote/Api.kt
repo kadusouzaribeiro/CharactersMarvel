@@ -13,6 +13,5 @@ interface Api {
     suspend fun getCharacters(
         @Query("offset") offset: Int?,
         @Query("limit") limit: Int?,
-        //@Query("nameStartsWith") searchQuery: String?
     ): BaseMarvel
 }
